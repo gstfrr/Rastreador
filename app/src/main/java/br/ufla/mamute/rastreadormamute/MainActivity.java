@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     public void udpmsg(String text) throws IOException {
         String address = "200.131.250.1";
         int port=6666;
-        
+
         InetAddress host = InetAddress.getByName(address);
 
         byte[] data = text.getBytes();
