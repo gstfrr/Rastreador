@@ -25,6 +25,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button b;
