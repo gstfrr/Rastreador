@@ -25,8 +25,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.content.Context.LOCATION_SERVICE;
-
 public class MainActivity extends AppCompatActivity {
 
     private Button b;
@@ -131,8 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void udpmsg(String text) throws IOException {
-        InetAddress host = InetAddress.getByName("200.131.250.1");
+        String address = "200.131.250.1";
         int port=6666;
+        
+        InetAddress host = InetAddress.getByName(address);
+
         byte[] data = text.getBytes();
         DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
         DatagramSocket soc = new DatagramSocket();

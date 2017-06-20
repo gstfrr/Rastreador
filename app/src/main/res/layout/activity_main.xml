@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:paddingBottom="16dp"
-android:paddingLeft="16dp"
-android:paddingRight="16dp"
-android:paddingTop="16dp"
-tools:context="br.ufla.mamute.rastreadormamute.MainActivity">
-
-<ScrollView
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/button"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true">
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context="br.ufla.mamute.rastreadormamute.MainActivity">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="wrap_content"
-        android:text="Localização do mamute: "
-        android:textSize="24sp"
-        android:id="@+id/textView"
         android:layout_below="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-</ScrollView>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="Localização do mamute: "
+            android:textSize="22sp"
+            android:id="@+id/textView"
+            android:layout_below="@+id/button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </ScrollView>
 
 
-<Button
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Iniciar rastreador"
-    android:id="@+id/button"
-    android:layout_marginTop="11dp"
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Iniciar rastreador"
+        android:id="@+id/button"
+        android:layout_marginTop="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
