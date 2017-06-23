@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
 
-                String posSize = "##.##########";
                 locus = (sdf.format(new Date())+" "+location.getLatitude()+" "+location.getLongitude());
 
 //                try {
