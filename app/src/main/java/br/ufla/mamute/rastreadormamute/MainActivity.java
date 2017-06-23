@@ -17,11 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,20 +47,14 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
 
                 String posSize = "##.##########";
-                locus = (
-                        sdf.format(new Date())
-                                +" "+
-                                Double.parseDouble(new DecimalFormat(posSize).format(location.getLongitude()))
-                                +" "+
-                                Double.parseDouble(new DecimalFormat(posSize).format(location.getLatitude()))
-                );
+                locus = (sdf.format(new Date())+" "+location.getLatitude()+" "+location.getLongitude());
 
-                try {
-                    udpmsg(locus);
-                    locus = "M "+locus;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    udpmsg(locus);
+//                    locus = "M "+locus;
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
                 t.append("\n"+locus);
                 //t.setText(locus);
@@ -109,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(
-                        new String[]{
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.INTERNET}
-                        ,10);
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.INTERNET}
+                    ,10);
             }
             return;
         }
@@ -128,16 +117,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void udpmsg(String text) throws IOException {
-        String address = "200.131.250.1";
-        int port=6666;
-
-        InetAddress host = InetAddress.getByName(address);
-
-        byte[] data = text.getBytes();
-        DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
-        DatagramSocket soc = new DatagramSocket();
-        soc.send(pac);
-
-    }
+//    public void udpmsg(String text) throws IOException {
+//        String address = "200.131.250.1";
+//        int port=6666;
+//
+//        InetAddress host = InetAddress.getByName(address);
+//
+//        byte[] data = text.getBytes();
+//        DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
+//        DatagramSocket soc = new DatagramSocket();
+//        soc.send(pac);
+//
+//    }
 }

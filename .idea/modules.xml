@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Rastreador.iml" filepath="$PROJECT_DIR$/Rastreador.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RastreadorMamute.iml" filepath="$PROJECT_DIR$/RastreadorMamute.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
