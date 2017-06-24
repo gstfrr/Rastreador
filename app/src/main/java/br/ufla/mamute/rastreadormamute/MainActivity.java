@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private Button b;
     private TextView t;
     private LocationManager locationManager;
-    private LocationListener listener;
+    private LocationListener listener_GPS;
+    private LocationListener listener_NETWORK;
+    private LocationListener listener_PASSIVE;
     private static String locus;
 
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -39,14 +41,16 @@ public class MainActivity extends AppCompatActivity {
         t = (TextView) findViewById(R.id.textView);
         b = (Button) findViewById(R.id.button);
 
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 
-        listener = new LocationListener() {
+        listener_GPS = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                t.append("GPS ");
 
-                locus = (sdf.format(new Date())+" "+location.getLatitude()+" "+location.getLongitude());
+                locus = (sdf.format(new Date()) + " " + location.getLatitude() + " " + location.getLongitude());
 
 //                try {
 //                    udpmsg(locus);
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 //                    e.printStackTrace();
 //                }
 
-                t.append("\n"+locus);
+                t.append("\n" + locus);
                 //t.setText(locus);
 
             }
@@ -72,7 +76,78 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProviderDisabled(String s) {
+                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(i);
+            }
+        };
 
+        listener_NETWORK = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                t.append("NETWORK ");
+
+                locus = (sdf.format(new Date()) + " " + location.getLatitude() + " " + location.getLongitude());
+
+//                try {
+//                    udpmsg(locus);
+//                    locus = "M "+locus;
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+                t.append("\n" + locus);
+                //t.setText(locus);
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(i);
+            }
+        };
+
+        listener_PASSIVE = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                t.append("PASSIVE ");
+
+                locus = (sdf.format(new Date()) + " " + location.getLatitude() + " " + location.getLongitude());
+
+//                try {
+//                    udpmsg(locus);
+//                    locus = "M "+locus;
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+
+                t.append("\n" + locus);
+                //t.setText(locus);
+
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(i);
             }
@@ -83,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case 10:
                 configure_button();
                 break;
@@ -92,16 +167,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void configure_button(){
+    void configure_button() {
         // first check for permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(
-                    new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.INTERNET}
-                    ,10);
+                        new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.INTERNET}
+                        , 10);
             }
             return;
         }
@@ -110,7 +185,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 1000, 0, listener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 200, 0, listener_NETWORK);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 0, listener_GPS);
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 200, 0, listener_PASSIVE);
+
             }
         });
     }
