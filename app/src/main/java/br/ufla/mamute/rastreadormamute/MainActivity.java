@@ -23,6 +23,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-//        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) t.append("\nGPS OK\n");
-//        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) t.append("\nNETWORK OK\n");
+        List<String> Provedores = locationManager.getAllProviders();
+        for(String provedor : Provedores){
+            t.append(provedor.toString()+"\n");
+        }
 
 
         listener_GPS = new LocationListener() {
