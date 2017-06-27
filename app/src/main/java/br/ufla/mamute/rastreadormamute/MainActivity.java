@@ -49,22 +49,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
 
-                locus = (
-                    sdf.format(new Date()) + " " +
-                    location.getLatitude() + " " +
-                    location.getLongitude() + " " +
-                    Float.toString(location.getAccuracy()) + " " +
-                    Float.toString(location.getSpeed())
-                );
+                String Horario = sdf.format(new Date());
+                String Latitude = Double.toString(location.getLatitude());
+                String Longitude = Double.toString(location.getLongitude());
+                String Erro = Float.toString(location.getAccuracy());
+                String Velocidade = Float.toString(location.getSpeed());
 
-                if(location.getAccuracy()<90) {
+                locus = (Horario+" "+Latitude+" "+Longitude+" "+Erro+" "+Velocidade);
+
+                //if(location.getAccuracy()<90) {
                     try {
                         udpmsg(locus);
                         locus = "M " + locus;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
+                //}
                 t.append("\n"+locus);
                 //t.setText(locus);
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void udpmsg(String text) throws IOException {
         String address = "177.105.60.225";
-        int port=7000;
+        int port=7500;
 
         InetAddress host = InetAddress.getByName(address);
 
