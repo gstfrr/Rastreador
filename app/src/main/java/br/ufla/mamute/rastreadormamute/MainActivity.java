@@ -23,7 +23,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView t;
     private LocationManager locationManager;
     private LocationListener listener_GPS;
-    private LocationListener listener_NETWORK;
     private static String locus;
 
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -45,65 +43,29 @@ public class MainActivity extends AppCompatActivity {
         t = (TextView) findViewById(R.id.textView);
         b = (Button) findViewById(R.id.button);
 
-
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        List<String> Provedores = locationManager.getAllProviders();
-        for(String provedor : Provedores){
-            t.append(provedor.toString()+"\n");
-        }
-
 
         listener_GPS = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
-                locus = (sdf.format(new Date()) + " " + location.getLatitude() + " " + location.getLongitude());
+                locus = (
+                    sdf.format(new Date()) + " " +
+                    location.getLatitude() + " " +
+                    location.getLongitude() + " " +
+                    Float.toString(location.getAccuracy()) + " " +
+                    Float.toString(location.getSpeed())
+                );
 
-//                try {
-//                    udpmsg(locus);
-//                    locus = "M " + locus;
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
-                t.append("\nG " + locus);
-                //t.setText(locus);
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(i);
-            }
-        };
-
-
-        listener_NETWORK = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-                locus = (sdf.format(new Date()) + " " + location.getLatitude() + " " + location.getLongitude());
-
-//                try {
-//                    udpmsg(locus);
-//                    locus = "M " + locus;
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
-                t.append("\nN " + locus);
+                if(location.getAccuracy()<90) {
+                    try {
+                        udpmsg(locus);
+                        locus = "M " + locus;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                t.append("\n"+locus);
                 //t.setText(locus);
 
             }
@@ -140,15 +102,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void configure_button() {
-        // first check for permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(
-                        new String[]{
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.INTERNET}
-                        , 10);
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.INTERNET}
+                    , 10);
             }
             return;
         }
@@ -157,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //noinspection MissingPermission
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 200, 0, listener_GPS);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 200, 0, listener_NETWORK);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener_GPS);
 
             }
         });
@@ -166,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void udpmsg(String text) throws IOException {
-        String address = "200.131.250.1";
-        int port=6666;
+        String address = "177.105.60.225";
+        int port=7000;
 
         InetAddress host = InetAddress.getByName(address);
 
