@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,10 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 String Horario = sdf.format(new Date());
                 String Latitude = Double.toString(location.getLatitude());
                 String Longitude = Double.toString(location.getLongitude());
-                String Erro = Float.toString(location.getAccuracy());
                 String Velocidade = Float.toString(location.getSpeed());
 
-                locus = (Horario+" "+Latitude+" "+Longitude+" "+Erro+" "+Velocidade);
+                locus = (Horario+" "+Latitude+" "+Longitude+" "+Velocidade);
 
                 //if(location.getAccuracy()<90) {
                     try {
@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void udpmsg(String text) throws IOException {
-        String address = "177.105.60.225";
+        String address = "177.105.60.185";
         int port=7500;
 
         InetAddress host = InetAddress.getByName(address);
 
-        byte[] data = text.getBytes();
+        byte[] data = text.getBytes(StandardCharsets.UTF_8);
         DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
         DatagramSocket soc = new DatagramSocket();
         soc.send(pac);
