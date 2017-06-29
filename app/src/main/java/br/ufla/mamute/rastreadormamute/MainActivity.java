@@ -15,39 +15,43 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    //interface
     private Button b;
     private TextView t;
+
+    //GPS
     private LocationManager locationManager;
     private LocationListener listener_GPS;
     private static String locus;
-    private EditText edHost,edPorta;
-
+    //time settings
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
+    //Server data
+    String address = "ibiza.dcc.ufla.br";
+    int port=5066;
+    InetAddress host;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
         t = (TextView) findViewById(R.id.textView);
         b = (Button) findViewById(R.id.button);
-        edHost = (EditText) findViewById(R.id.host);
-        edPorta = (EditText) findViewById(R.id.porta);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -60,16 +64,16 @@ public class MainActivity extends AppCompatActivity {
                 String Longitude = Double.toString(location.getLongitude());
                 String Velocidade = Float.toString(location.getSpeed());
 
-                locus = (Horario+" "+Latitude+" "+Longitude+" "+Velocidade);
+                locus = ("M "+Horario+" "+Latitude+" "+Longitude+" "+Velocidade);
 
-                //if(location.getAccuracy()<90) {
+                if(location.getAccuracy()<90) {
                     try {
-                        udpmsg(locus,edHost.getText().toString(), Integer.parseInt(edPorta.getText().toString()));
-                        locus = "M " + locus;
+                        SentUPD(locus+" #");
+                        locus = "* " + locus;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                //}
+                }
                 t.append("\n"+locus);
                 //t.setText(locus);
 
@@ -110,11 +114,11 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(
-                    new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.INTERNET}
-                    , 10);
+                        new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.INTERNET}
+                        , 10);
             }
             return;
         }
@@ -123,37 +127,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //noinspection MissingPermission
-                if(edHost.getText().equals(" ") || edPorta.getText().equals(" "))
-                {
-                    Toast.makeText(getBaseContext(), "Digite o Todos os campos", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    try {
-                        udpmsg(locus,edHost.getText().toString(), Integer.parseInt(edPorta.getText().toString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener_GPS);
-
-                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener_GPS);
 
             }
         });
     }
 
-
-    public void udpmsg(String text, String endereco, int porta) throws IOException {
-        String address = endereco;
-        int port= porta;
-
-        InetAddress host = InetAddress.getByName(address);
-
+    public void SentUPD (String text) throws IOException {
+        host = InetAddress.getByName(address);
         byte[] data = text.getBytes(StandardCharsets.UTF_8);
         DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
         DatagramSocket soc = new DatagramSocket();
         soc.send(pac);
-
     }
 }
