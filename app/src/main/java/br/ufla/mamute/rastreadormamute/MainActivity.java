@@ -40,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
     //Server data
-    String address = "ibiza.dcc.ufla.br";
-    int port=5066;
-    InetAddress host;
+    //private String address = "ibiza.dcc.ufla.br";
+    private final String address = "177.105.60.80";
+    private InetAddress host;
+    private final int port = 5066;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,17 +65,17 @@ public class MainActivity extends AppCompatActivity {
                 String Longitude = Double.toString(location.getLongitude());
                 String Velocidade = Float.toString(location.getSpeed());
 
-                locus = ("M "+Horario+" "+Latitude+" "+Longitude+" "+Velocidade);
+                locus = ("M " + Horario + " " + Latitude + " " + Longitude + " " + Velocidade);
 
-                if(location.getAccuracy()<90) {
-                    try {
-                        SentUPD(locus+" #");
-                        locus = "* " + locus;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                //if(location.getAccuracy()<90) {
+                try {
+                    SentUPD(locus + " #");
+                    locus = "* " + locus;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                t.append("\n"+locus);
+                //}
+                t.append("\n" + locus);
                 //t.setText(locus);
 
             }
@@ -117,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION,
                                 Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.INTERNET}
-                        , 10);
+                                Manifest.permission.INTERNET}, 10);
             }
             return;
         }
@@ -133,8 +133,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void SentUPD (String text) throws IOException {
+    public void SentUPD(String text) throws IOException {
         host = InetAddress.getByName(address);
+
         byte[] data = text.getBytes(StandardCharsets.UTF_8);
         DatagramPacket pac = new DatagramPacket(data, data.length, host, port);
         DatagramSocket soc = new DatagramSocket();
