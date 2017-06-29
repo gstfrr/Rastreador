@@ -15,7 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener listener_GPS;
     private static String locus;
+    private EditText edHost,edPorta;
 
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         t = (TextView) findViewById(R.id.textView);
         b = (Button) findViewById(R.id.button);
+        edHost = (EditText) findViewById(R.id.host);
+        edPorta = (EditText) findViewById(R.id.porta);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //if(location.getAccuracy()<90) {
                     try {
-                        udpmsg(locus);
+                        udpmsg(locus,edHost.getText().toString(), Integer.parseInt(edPorta.getText().toString()));
                         locus = "M " + locus;
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -118,16 +123,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //noinspection MissingPermission
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener_GPS);
+                if(edHost.getText().equals(" ") || edPorta.getText().equals(" "))
+                {
+                    Toast.makeText(getBaseContext(), "Digite o Todos os campos", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    try {
+                        udpmsg(locus,edHost.getText().toString(), Integer.parseInt(edPorta.getText().toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener_GPS);
+
+                }
 
             }
         });
     }
 
 
-    public void udpmsg(String text) throws IOException {
-        String address = "177.105.60.185";
-        int port=7500;
+    public void udpmsg(String text, String endereco, int porta) throws IOException {
+        String address = endereco;
+        int port= porta;
 
         InetAddress host = InetAddress.getByName(address);
 
